@@ -1,0 +1,155 @@
+@using System.Globalization
+@model UmbracoFun.Models.Game
+@{
+    Layout = null;
+
+    var details = new (string Label, string Value)[]
+    {
+        ("Release date", Model.ReleaseDate?.ToString("d MMMM yyyy", CultureInfo.InvariantCulture) ?? "TBA"),
+        ("Developers", string.Join(", ", Model.Developers.Select(x => x.Name))),
+        ("Publishers", string.Join(", ", Model.Publishers.Select(x => x.Name))),
+        ("Genres", string.Join(", ", Model.Genres.Select(x => x.Name))),
+        ("Platforms", string.Join(", ", Model.Platforms.Select(x => x.Name))),
+        ("Localization", Model.Localization.Name),
+    };
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@Model.Title</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 48rem;
+            margin: 3rem auto;
+            padding: 0 1rem;
+            line-height: 1.5;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: .5rem;
+        }
+
+        dl {
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            gap: .5rem 1.5rem;
+        }
+
+        dt {
+            font-weight: 600;
+        }
+
+        dd {
+            margin: 0;
+        }
+
+        .scores {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .score {
+            border: 1px solid #ddd;
+            border-radius: .5rem;
+            padding: .75rem 1rem;
+        }
+
+        .score strong {
+            display: block;
+            font-size: 1.75rem;
+        }
+
+        .description {
+            white-space: pre-line;
+        }
+
+        .screenshots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+            gap: .75rem;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <header>
+            <h1>@Model.Title</h1>
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="@Model.Image" alt="@Model.Title" />
+            }
+        </header>
+
+        <section>
+            <dl>
+                @foreach (var (label, value) in details.Where(x => !string.IsNullOrWhiteSpace(x.Value)))
+                {
+                    <dt>@label</dt>
+                    <dd>@value</dd>
+                }
+            </dl>
+        </section>
+
+        <section class="scores">
+            @if (Model.IsReleased)
+            {
+                <div class="score">
+                    <strong>@Model.UsersScore.ToString("0.0", CultureInfo.InvariantCulture)</strong>
+                    Users · @Model.UsersReviewsCount reviews
+                </div>
+                <div class="score">
+                    <strong>@Model.CriticsScore.ToString("0.0", CultureInfo.InvariantCulture)</strong>
+                    Critics · @Model.CriticsReviewsCount reviews
+                </div>
+            }
+            else
+            {
+                <div class="score">
+                    <strong>@Model.WaitingCount</strong>
+                    Waiting
+                </div>
+                <div class="score">
+                    <strong>@Model.NotWaitingCount</strong>
+                    Not waiting
+                </div>
+            }
+        </section>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <section>
+                <h2>About</h2>
+                <p class="description">@Model.Description</p>
+            </section>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.Trailer))
+        {
+            <section>
+                <h2>Trailer</h2>
+                <a href="@Model.Trailer" target="_blank" rel="noopener noreferrer">Watch the trailer</a>
+            </section>
+        }
+
+        @if (Model.Screenshots.Count > 0)
+        {
+            <section>
+                <h2>Screenshots</h2>
+                <div class="screenshots">
+                    @foreach (var screenshot in Model.Screenshots.Where(x => !string.IsNullOrEmpty(x.ImageUrl)))
+                    {
+                        <img src="@screenshot.ImageUrl" alt="@Model.Title screenshot" loading="lazy" />
+                    }
+                </div>
+            </section>
+        }
+    </article>
+</body>
+</html>

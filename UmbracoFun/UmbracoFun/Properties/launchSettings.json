@@ -1,0 +1,24 @@
+{
+  "iisSettings": {
+    "iis": {
+      "applicationUrl": "https://172.16.1.62:5011"
+    }
+  },
+  "profiles": {
+    "UmbracoFun": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:51085;http://localhost:51084"
+    },
+    "IIS": {
+      "commandName": "IIS",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

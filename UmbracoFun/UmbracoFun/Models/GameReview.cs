@@ -1,0 +1,28 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace UmbracoFun.Models
+{
+    public class GameReview
+    {
+
+        [JsonPropertyName("game")]
+        public Game Game { get; set; }
+
+        [JsonPropertyName("applicationUser")]
+        public ApplicationUser ApplicationUser { get; set; }
+
+        [JsonPropertyName("score")]
+        [Range(0.0f, 10.0f)]
+        public float Score { get; set; }
+
+        [Required(ErrorMessage = "Text should be set")]
+        [MinLength(1, ErrorMessage = "Text should be not empty")]
+        public string TextContent { get; set; }
+
+        [JsonPropertyName("date")]
+        public DateOnly Date { get; set; }
+
+        public List<GamePlayerReviewShift> GamePlayerReviewShifts { get; set; } = new();
+    }
+}
