@@ -1,16 +1,13 @@
-﻿using System.Text.Json.Serialization;
+﻿using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace UmbracoFun.Models
+namespace UmbracoFun.Models;
+
+[PublishedModel("genre")]
+public class Genre : PublishedContentModel
 {
-    public class Genre
+    public Genre(IPublishedContent content, IPublishedValueFallback publishedValueFallback) : base(content, publishedValueFallback)
     {
-        [JsonPropertyName("id")]
-        public long Id { get; set; }
-
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
-
-        [JsonPropertyName("games")]
-        public List<Game> Games { get; set; } = new();
     }
+
+    public string Title => this.Value<string>("title");
 }

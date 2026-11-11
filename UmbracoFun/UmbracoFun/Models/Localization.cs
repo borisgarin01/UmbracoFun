@@ -1,12 +1,13 @@
-﻿using System.Text.Json.Serialization;
+﻿using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace UmbracoFun.Models;
 
-public class Localization
+[PublishedModel("localization")]
+public class Localization : PublishedContentModel
 {
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public Localization(IPublishedContent content, IPublishedValueFallback publishedValueFallback) : base(content, publishedValueFallback)
+    {
+    }
 
-    [JsonPropertyName("games")]
-    public List<Game> Games { get; set; } = new List<Game>();
+    public string Title => this.Value<string>("title");
 }

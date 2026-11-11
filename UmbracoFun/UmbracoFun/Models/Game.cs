@@ -1,77 +1,48 @@
-﻿using System.Runtime.InteropServices;
-using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace UmbracoFun.Models;
 
-public sealed class Game
+[PublishedModel("game")]
+public class Game : PublishedContentModel
 {
-    [JsonPropertyName("id")]
-    public required long Id { get; set; }
+    // 1. Declare a private field to store the fallback
+    private readonly IPublishedValueFallback _publishedValueFallback;
 
-    [JsonPropertyName("title")]
-    public required string Title { get; set; }
+    public Game(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+        : base(content, publishedValueFallback)
+    {
+        // 2. Assign a value to the field
+        _publishedValueFallback = publishedValueFallback;
+    }
 
-    [JsonPropertyName("image")]
-    public required string Image { get; set; }
+    public string Title => this.Value<string>("title");
+    public string Description => this.Value<string>("description");
 
-    [JsonPropertyName("usersScore")]
-    public required float UsersScore { get; set; }
+    // 3. Use the private field to construct Genre
+    public IEnumerable<Genre> Genres =>
+        this.Value<IEnumerable<IPublishedContent>>("genres")?
+            .Select(x => new Genre(x, _publishedValueFallback))
+        ?? Enumerable.Empty<Genre>();
 
-    [JsonPropertyName("usersReviewsCount")]
-    public required int UsersReviewsCount { get; set; }
+    public IEnumerable<Developer> Developers => this.Value<IEnumerable<IPublishedContent>>("developers")?
+        .Select(x => new Developer(x, _publishedValueFallback))
+        ?? Enumerable.Empty<Developer>();
 
-    [JsonPropertyName("criticsScore")]
-    public required float CriticsScore { get; set; }
+    public IEnumerable<Publisher> Publishers => this.Value<IEnumerable<IPublishedContent>>("publishers")?
+        .Select(x => new Publisher(x, _publishedValueFallback))
+        ?? Enumerable.Empty<Publisher>();
 
-    [JsonPropertyName("criticsReviewsCount")]
-    public required int CriticsReviewsCount { get; set; }
+    public IEnumerable<Platform> Platforms => this.Value<IEnumerable<IPublishedContent>>("platforms")?
+        .Select(x => new Platform(x, _publishedValueFallback))
+        ?? Enumerable.Empty<Platform>();
 
-    [JsonPropertyName("waitingCount")]
-    public int WaitingCount { get; set; }
+    public Localization Localization => this.Value<IEnumerable<IPublishedContent>>("localizations")?
+        .Select(x => new Localization(x, _publishedValueFallback)).Single();
 
-    [JsonPropertyName("notWaitingCount")]
-    public int NotWaitingCount { get; set; }
-
-    [JsonPropertyName("publishers")]
-    public required List<Publisher> Publishers { get; set; } = new();
-
-    [JsonPropertyName("releaseDate")]
-    public required DateOnly? ReleaseDate { get; set; }
-
-    /// <summary>
-    /// Игра считается вышедшей с дня релиза. Без даты релиза - еще не вышла.
-    /// До выхода можно только голосовать "жду / не жду", оценки и отзывы запрещены.
-    /// </summary>
-    [JsonIgnore]
-    public bool IsReleased => ReleaseDate.HasValue && ReleaseDate.Value <= DateOnly.FromDateTime(DateTime.Today);
-
-    [JsonPropertyName("description")]
-    public required string Description { get; set; }
-
-    [JsonPropertyName("trailer")]
-    public required string Trailer { get; set; }
-
-    [JsonPropertyName("platforms")]
-    public required List<Platform> Platforms { get; set; } = new();
-
-    [JsonPropertyName("genres")]
-    public required List<Genre> Genres { get; set; } = new();
-
-    [JsonPropertyName("developers")]
-    public required List<Developer> Developers { get; set; } = new();
-
-    [JsonPropertyName("gameScreenshots")]
-    public required List<GameScreenshot> Screenshots { get; set; } = new();
-
-    [JsonPropertyName("gamePlayersReviews")]
-    public required List<GameReview> GamesPlayersReviews { get; set; } = new();
-
-    [JsonPropertyName("localization")]
-    public required Localization Localization { get; set; }
-
-    [JsonPropertyName("localizationId")]
-    public long LocalizationId { get; set; }
-
-    [JsonPropertyName("links")]
-    public List<GamesCollection> GameCollections { get; set; } = new();
+    public string ImageSource => this.Value<MediaWithCrops>("image")?.MediaUrl();
+    public DateTime? ReleaseDate => this.Value<DateTime?>("releaseDate");
 }

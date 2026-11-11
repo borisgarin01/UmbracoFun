@@ -1,18 +1,13 @@
-﻿using System.Text.Json.Serialization;
+﻿using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace UmbracoFun.Models;
 
-public class Developer
+[PublishedModel("developer")]
+public class Developer : PublishedContentModel
 {
-    [JsonPropertyName("id")]
-    public long Id { get; init; }
+    public Developer(IPublishedContent content, IPublishedValueFallback publishedValueFallback) : base(content, publishedValueFallback)
+    {
+    }
 
-    [JsonPropertyName("name")]
-    public string Name { get; init; }
-
-    [JsonPropertyName("createTimeStamp")]
-    public DateTime CreateTimeStamp { get; set; }
-
-    [JsonPropertyName("games")]
-    public List<Game> Games { get; init; } = new();
+    public string Title => this.Value<string>("title");
 }
