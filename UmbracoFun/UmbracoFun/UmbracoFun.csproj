@@ -8,11 +8,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.3.1" />
 	  <PackageReference Include="Umbraco.Cms" Version="18.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="umbraco\" />
+	  <Folder Include="Composers\" />
 	</ItemGroup>
 
 </Project>

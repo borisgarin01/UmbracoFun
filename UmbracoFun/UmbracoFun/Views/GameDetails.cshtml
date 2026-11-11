@@ -1,0 +1,51 @@
+﻿@using Umbraco.Cms.Web.Common.Views
+@using UmbracoFun.Models
+
+@inherits UmbracoViewPage<Game>
+
+<h1 class="game-name">@Model.Title</h1>
+<h2 class="genres-title">Жанры</h2>
+<ul class="genres-list">
+    @foreach (Genre genre in Model.Genres)
+    {
+        <li>@genre.Title</li>
+    }
+</ul>
+<h2 class="genres-title">Разрабы</h2>
+<ul class="developers-list">
+    @foreach (Developer developer in Model.Developers)
+    {
+        <li>@developer.Title</li>
+    }
+</ul>
+<h2 class="publishers-title">Издатели</h2>
+<ul class="publishers-list">
+    @foreach (Publisher publisher in Model.Publishers)
+    {
+        <li>@publisher.Title</li>
+    }
+</ul>
+<h2 class="genres-title">Платформы</h2>
+<ul>
+    @foreach (Platform platform in Model.Platforms)
+    {
+        <li>@platform.Title</li>
+    }
+</ul>
+@if (Model.Localization is not null)
+{
+    <h2 class="genres-title">Локализация</h2>
+    <p>@Model.Localization.Title</p>
+}
+@if (!string.IsNullOrWhiteSpace(Model.ImageSource))
+{
+    <img src="@Model.ImageSource" />
+}
+@if (!string.IsNullOrWhiteSpace(Model.Description))
+{
+    <p>@Model.Description</p>
+}
+@if (Model.ReleaseDate is not null)
+{
+    <p>@Model.ReleaseDate</p>
+}
